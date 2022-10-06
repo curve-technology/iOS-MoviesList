@@ -1,0 +1,24 @@
+## Build generated
+curve
+build/
+builds/
+DerivedData/
+
+## Various settings
+*.pbxuser
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.xcworkspacedata
+
+### OSX ###
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+### Derived files ###
+Derived/
+
