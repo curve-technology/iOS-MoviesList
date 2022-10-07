@@ -1,14 +1,12 @@
 import XCTest
-@testable import CurveTechTask
+@testable import MoviesList_SwiftUI
 
-class CurveTechTaskTests: XCTestCase {
+class MoviesList_SwiftUITests: XCTestCase {
 
     override func setUpWithError() throws {
-
     }
 
     override func tearDownWithError() throws {
-
     }
 
     func testExample() throws {

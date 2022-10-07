@@ -3,7 +3,6 @@ import SwiftUI
 
 struct PopularMoviesListView: View {
     @State var movies: [Movie] = []
-    @State var sessionDataTask: SessionDataTask?
     @State var dataTask: Task<Data, Error>?
     let dataProvider: DataProvider
 
@@ -30,19 +29,32 @@ struct PopularMoviesListView: View {
                 }
             }
             .listStyle(.plain)
-            .navigationTitle("Popular Movies")
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                fetchMovies2()
+            .navigationTitle("Popular Movies")
+            .task {
+                await fetchMovies()
             }
             .onDisappear {
-                sessionDataTask?.cancel()
+                dataTask?.cancel()
             }
         }
     }
     
-    func fetchMovies() {
-        sessionDataTask = dataProvider.fetchData(with: .popularMoviesURL(at: 1)) { result in
+    func fetchMovies() async {
+        dataTask = dataProvider.createFetchTask(with: URL.popularMoviesURL(at: 1))
+        switch await dataTask?.result {
+        case let .success(data):
+            let popularMovies = try? JSONDecoder.popularMoviesDecoder.decode(PopularMovies.self, from: data)
+            DispatchQueue.main.async {
+                self.movies = popularMovies?.results ?? []
+            }
+        case .failure, .none:
+            return
+        }
+    }
+
+    func fetchMovies2() {
+        let sessionDataTask = dataProvider.fetchData(with: .popularMoviesURL(at: 1)) { result in
             switch result {
             case let .success(data):
                 let popularMovies = try? JSONDecoder.popularMoviesDecoder.decode(PopularMovies.self, from: data)
@@ -53,22 +65,7 @@ struct PopularMoviesListView: View {
                 return
             }
         }
-        sessionDataTask?.resume()
-    }
-    
-    func fetchMovies2() {
-        Task {
-            dataTask = dataProvider.createFetchDataTask(with: URL.popularMoviesURL(at: 1))
-            switch await dataTask?.result {
-            case let .success(data):
-                let popularMovies = try? JSONDecoder.popularMoviesDecoder.decode(PopularMovies.self, from: data)
-                DispatchQueue.main.async {
-                    self.movies = popularMovies?.results ?? []
-                }
-            case .failure, .none:
-                return
-            }
-        }
+        sessionDataTask.resume()
     }
 }
 
