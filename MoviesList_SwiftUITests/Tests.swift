@@ -1,15 +1,9 @@
-import XCTest
+import Testing
 @testable import MoviesList_SwiftUI
 
-class MoviesList_SwiftUITests: XCTestCase {
+struct MoviesListTests {
 
-    override func setUpWithError() throws {
-    }
-
-    override func tearDownWithError() throws {
-    }
-
-    func testExample() throws {
-
+    @Test func example() async throws {
+        #expect(1 == 1)
     }
 }
