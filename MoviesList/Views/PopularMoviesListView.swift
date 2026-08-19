@@ -52,21 +52,6 @@ struct PopularMoviesListView: View {
             return
         }
     }
-
-    func fetchMovies2() {
-        let sessionDataTask = dataProvider.fetchData(with: .popularMoviesURL(at: 1)) { result in
-            switch result {
-            case let .success(data):
-                let popularMovies = try? JSONDecoder.popularMoviesDecoder.decode(PopularMovies.self, from: data)
-                DispatchQueue.main.async {
-                    self.movies = popularMovies?.results ?? []
-                }
-            case .failure:
-                return
-            }
-        }
-        sessionDataTask.resume()
-    }
 }
 
 struct PopularMoviesListView_Previews: PreviewProvider {
